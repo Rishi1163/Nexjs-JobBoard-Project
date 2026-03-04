@@ -6,7 +6,7 @@ export interface JobApplication {
     status: string,
     notes?: string,
     salary?: string,
-    joburl?: string,
+    jobUrl?: string,
     order: number,
     columnId?: string,
     tags?: string[],
@@ -17,7 +17,7 @@ export interface Column {
     _id: string,
     name: string,
     order: number,
-    jobApplication: JobApplication[]
+    jobApplications: JobApplication[]
 }
 
 export interface Board {

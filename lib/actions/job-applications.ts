@@ -2,7 +2,8 @@
 import { error } from "console"
 import { getSession } from "../auth/auth"
 import connectDb from "../db"
-import { Board, Column, JobApplications } from "../models"
+import { Board, Column, JobApplication } from "../models"
+import { revalidatePath } from "next/cache"
 
 interface jobApplicationData {
     company: string,
@@ -64,9 +65,9 @@ export default async function createJobApplication(data: jobApplicationData) {
         return { error: "Column not found" }
     }
 
-    const maxOrder = (await JobApplications.findOne({ columnId }).sort({ order: -1 }).select("order").lean()) as { order: number } | null
+    const maxOrder = (await JobApplication.findOne({ columnId }).sort({ order: -1 }).select("order").lean()) as { order: number } | null
 
-    const jobApplication = await JobApplications.create({
+    const jobApplication = await JobApplication.create({
         company,
         position,
         location,
@@ -83,8 +84,10 @@ export default async function createJobApplication(data: jobApplicationData) {
     })
 
     await Column.findByIdAndUpdate(columnId, {
-        $push: {JobApplications: jobApplication._id}
+        $push: { jobApplications: jobApplication._id }
     })
+
+    revalidatePath("/dashboard")
 
     return { data: JSON.parse(JSON.stringify(jobApplication)) }
 }

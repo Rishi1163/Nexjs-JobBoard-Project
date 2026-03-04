@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import CreateJobApplicationDailog from "./create-job-dailog";
+import JobApplicationCard from "./JobApplicationCard";
 
 interface KanbanBoardProps {
     board: Board;
@@ -42,12 +43,13 @@ const COLUMN_CONFIG: Array<ColConfig> = [
 
 function Dropppablecolumn({column, config, boardId, sortedColumn}: {column: Column; config: ColConfig; boardId: string, sortedColumn: Column[]}) {
 
-    const sortedJobs = column.jobApplication?.sort((a,b) => a.order - b.order) || []
+    const sortedJobs = column.jobApplications?.sort((a,b) => a.order - b.order) || []
+    // console.log("jobs:", column.jobApplications)
 
     function JobCard ({jobs, columns}: {jobs: JobApplication; columns: Column[]}) {
         return (
             <div>
-                {/* <JobApplicationCard /> */}
+                <JobApplicationCard job={jobs} columns={columns}/>
             </div>
         )
     }
@@ -95,6 +97,7 @@ function Dropppablecolumn({column, config, boardId, sortedColumn}: {column: Colu
 export default function KanbanBoard({board, userId}: KanbanBoardProps) {
 
     const columns = board.columns
+    // console.log("columns:", columns)
     const sortedColumns = columns?.sort((a,b) => a.order - b.order) || []
     return (
         <>
